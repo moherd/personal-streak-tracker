@@ -47,30 +47,23 @@ export default function DayDetailsModal({
             return (
               <div
                 key={habit.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '0.75rem',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-md)',
-                  backgroundColor: isCompleted ? 'var(--success-light)' : 'var(--bg-surface)'
-                }}
+                className={`day-details-item ${isCompleted ? 'completed' : ''}`}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div className="day-details-left">
                   <button
                     type="button"
-                    className="btn-icon"
+                    className="btn-icon checklist-check-btn"
                     style={{
                       color: isCompleted ? 'var(--success)' : 'var(--text-subtle)',
                       padding: 0
                     }}
                     onClick={() => onToggleCompletion(habit.id, selectedDate)}
+                    aria-label={isCompleted ? `Undo ${habit.name}` : `Complete ${habit.name}`}
                   >
                     {isCompleted ? <CheckCircle2 size={22} /> : <Circle size={22} />}
                   </button>
-                  <div>
-                    <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-main)' }}>
+                  <div className="day-details-info">
+                    <h4 style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-main)', margin: 0 }}>
                       {habit.name}
                     </h4>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -82,7 +75,6 @@ export default function DayDetailsModal({
                 <button
                   type="button"
                   className={`checklist-toggle-btn ${isCompleted ? 'btn-completed' : 'btn-complete'}`}
-                  style={{ minWidth: '85px', padding: '0.35rem 0.65rem', fontSize: '0.775rem' }}
                   onClick={() => onToggleCompletion(habit.id, selectedDate)}
                 >
                   {isCompleted ? (

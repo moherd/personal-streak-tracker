@@ -36,8 +36,7 @@ export default function TodayHabitsList({
       <div className="section-title">
         <span>Today's Habits</span>
         <button
-          className="btn btn-secondary"
-          style={{ fontSize: '0.8rem', padding: '0.35rem 0.65rem' }}
+          className="btn btn-secondary section-action-btn"
           onClick={onCreateHabit}
         >
           <Plus size={14} />
@@ -59,13 +58,13 @@ export default function TodayHabitsList({
               <div className="checklist-left">
                 <button
                   type="button"
-                  className="btn-icon"
+                  className="btn-icon checklist-check-btn"
                   style={{
-                    color: isCompleted ? 'var(--success)' : 'var(--text-subtle)',
-                    padding: 0
+                    color: isCompleted ? 'var(--success)' : 'var(--text-subtle)'
                   }}
                   onClick={() => onToggleCompletion(habit.id, todayStr)}
                   title={isCompleted ? 'Undo completion' : 'Mark complete'}
+                  aria-label={isCompleted ? `Undo completion for ${habit.name}` : `Mark ${habit.name} complete`}
                 >
                   {isCompleted ? <CheckCircle2 size={24} /> : <Circle size={24} />}
                 </button>
@@ -74,13 +73,13 @@ export default function TodayHabitsList({
                   <h4>{habit.name}</h4>
                   <div className="checklist-meta">
                     <span className="category-tag">{habit.category}</span>
-                    <span>•</span>
-                    <span style={{ textTransform: 'capitalize' }}>
+                    <span className="meta-bullet">•</span>
+                    <span className="meta-freq" style={{ textTransform: 'capitalize' }}>
                       {habit.frequency === 'weekly'
                         ? `${habit.target_days_per_week || 3}x/week`
                         : 'Daily'}
                     </span>
-                    <span>•</span>
+                    <span className="meta-bullet">•</span>
                     <span className={`streak-pill ${metrics.currentStreak === 0 ? 'zero' : ''}`}>
                       <Flame size={12} />
                       <span>{metrics.currentStreak} {habit.frequency === 'weekly' ? 'wks' : 'days'}</span>
@@ -89,11 +88,12 @@ export default function TodayHabitsList({
                 </div>
               </div>
 
-              <div>
+              <div className="checklist-action">
                 <button
                   type="button"
                   className={`checklist-toggle-btn ${isCompleted ? 'btn-completed' : 'btn-complete'}`}
                   onClick={() => onToggleCompletion(habit.id, todayStr)}
+                  aria-label={isCompleted ? `Undo ${habit.name}` : `Complete ${habit.name}`}
                 >
                   {isCompleted ? (
                     <>

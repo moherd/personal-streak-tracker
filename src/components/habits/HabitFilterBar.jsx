@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Filter, X } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 
 export default function HabitFilterBar({
   search,
@@ -22,46 +22,27 @@ export default function HabitFilterBar({
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '0.75rem',
-        alignItems: 'center',
-        marginBottom: '1.5rem',
-        background: 'var(--bg-surface)',
-        padding: '0.85rem 1rem',
-        border: '1px solid var(--border-color)',
-        borderRadius: 'var(--radius-lg)'
-      }}
-    >
-      <div style={{ position: 'relative', flex: '1 1 200px' }}>
+    <div className="habit-filter-bar">
+      <div className="filter-search-box">
         <Search
           size={16}
-          style={{
-            position: 'absolute',
-            left: '0.75rem',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            color: 'var(--text-subtle)'
-          }}
+          className="filter-search-icon"
         />
         <input
           type="text"
-          className="form-input"
-          style={{ paddingLeft: '2.25rem', height: '36px' }}
+          className="form-input filter-search-input"
           placeholder="Search habits..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+      <div className="filter-select-group">
         <select
-          className="form-select"
-          style={{ height: '36px', width: 'auto', fontSize: '0.825rem' }}
+          className="form-select filter-select"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
+          aria-label="Filter by category"
         >
           <option value="all">All Categories</option>
           {categories.map((c) => (
@@ -72,10 +53,10 @@ export default function HabitFilterBar({
         </select>
 
         <select
-          className="form-select"
-          style={{ height: '36px', width: 'auto', fontSize: '0.825rem' }}
+          className="form-select filter-select"
           value={frequency}
           onChange={(e) => setFrequency(e.target.value)}
+          aria-label="Filter by frequency"
         >
           <option value="all">All Frequencies</option>
           <option value="daily">Daily</option>
@@ -83,10 +64,10 @@ export default function HabitFilterBar({
         </select>
 
         <select
-          className="form-select"
-          style={{ height: '36px', width: 'auto', fontSize: '0.825rem' }}
+          className="form-select filter-select"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
+          aria-label="Filter by status"
         >
           <option value="active">Active Habits</option>
           <option value="archived">Archived Habits</option>
@@ -96,8 +77,7 @@ export default function HabitFilterBar({
         {hasActiveFilters && (
           <button
             type="button"
-            className="btn btn-secondary"
-            style={{ height: '36px', padding: '0 0.65rem', fontSize: '0.8rem' }}
+            className="btn btn-secondary filter-reset-btn"
             onClick={resetFilters}
             title="Reset Filters"
           >

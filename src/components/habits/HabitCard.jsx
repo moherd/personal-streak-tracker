@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Award, Calendar, Edit2, Archive, Trash2, CheckCircle, RotateCcw } from 'lucide-react';
+import { Flame, Award, Edit2, Archive, Trash2, RotateCcw } from 'lucide-react';
 import { calculateHabitStreak } from '../../utils/streakCalculator';
 import { formatDisplayDate } from '../../utils/dateUtils';
 
@@ -23,30 +23,15 @@ export default function HabitCard({
       <div>
         <div className="habit-card-header">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+            <div className="habit-card-tags">
               <span className="category-tag">{habit.category}</span>
-              <span
-                style={{
-                  fontSize: '0.725rem',
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  color: 'var(--text-muted)'
-                }}
-              >
+              <span className="frequency-tag">
                 {habit.frequency === 'weekly'
                   ? `${habit.target_days_per_week || 3}x/week`
                   : 'Daily'}
               </span>
               {habit.is_archived && (
-                <span
-                  style={{
-                    fontSize: '0.7rem',
-                    padding: '0.1rem 0.4rem',
-                    background: '#e2e8f0',
-                    color: '#475569',
-                    borderRadius: 'var(--radius-sm)'
-                  }}
-                >
+                <span className="archived-tag">
                   Archived
                 </span>
               )}
@@ -60,39 +45,29 @@ export default function HabitCard({
         )}
 
         <div className="habit-card-stats">
-          <div>
+          <div className="habit-stat-col">
             <div className="stat-mini-label">Current Streak</div>
             <div
               className="stat-mini-val"
               style={{
-                color: metrics.currentStreak > 0 ? '#d97706' : 'var(--text-muted)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.2rem'
+                color: metrics.currentStreak > 0 ? '#d97706' : 'var(--text-muted)'
               }}
             >
               <Flame size={14} />
               <span>{metrics.currentStreak}</span>
             </div>
           </div>
-          <div>
+          <div className="habit-stat-col">
             <div className="stat-mini-label">Longest Streak</div>
             <div
               className="stat-mini-val"
-              style={{
-                color: '#7c3aed',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.2rem'
-              }}
+              style={{ color: '#7c3aed' }}
             >
               <Award size={14} />
               <span>{metrics.longestStreak}</span>
             </div>
           </div>
-          <div>
+          <div className="habit-stat-col">
             <div className="stat-mini-label">Consistency</div>
             <div className="stat-mini-val" style={{ color: 'var(--primary)' }}>
               {metrics.completionRate}%
@@ -100,37 +75,39 @@ export default function HabitCard({
           </div>
         </div>
 
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+        <div className="habit-card-submeta">
           Started: {formatDisplayDate(habit.start_date)} • Total completions: {metrics.totalCompletions}
         </div>
       </div>
 
       <div className="habit-card-footer">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+        <div className="habit-card-actions">
           <button
             type="button"
-            className="btn-icon"
+            className="btn-icon habit-action-btn"
             onClick={() => onEdit(habit)}
             title="Edit Habit"
+            aria-label={`Edit ${habit.name}`}
           >
-            <Edit2 size={15} />
+            <Edit2 size={16} />
           </button>
           <button
             type="button"
-            className="btn-icon"
+            className="btn-icon habit-action-btn"
             onClick={() => onToggleArchive(habit.id, !habit.is_archived)}
             title={habit.is_archived ? 'Unarchive Habit' : 'Archive Habit'}
+            aria-label={habit.is_archived ? `Unarchive ${habit.name}` : `Archive ${habit.name}`}
           >
-            {habit.is_archived ? <RotateCcw size={15} /> : <Archive size={15} />}
+            {habit.is_archived ? <RotateCcw size={16} /> : <Archive size={16} />}
           </button>
           <button
             type="button"
-            className="btn-icon"
-            style={{ color: 'var(--danger)' }}
+            className="btn-icon habit-action-btn habit-delete-btn"
             onClick={() => onDelete(habit)}
             title="Delete Habit"
+            aria-label={`Delete ${habit.name}`}
           >
-            <Trash2 size={15} />
+            <Trash2 size={16} />
           </button>
         </div>
       </div>

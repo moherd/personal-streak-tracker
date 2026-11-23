@@ -114,17 +114,17 @@ create policy "Users can delete their own habit logs" on public.habit_logs for d
 
           {user ? (
             <div>
-              <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', rowGap: '0.5rem', fontSize: '0.875rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Email:</span>
-                <strong>{user.email}</strong>
+              <div className="account-details-grid">
+                <span className="account-label">Email:</span>
+                <strong className="account-val">{user.email}</strong>
 
-                <span style={{ color: 'var(--text-muted)' }}>User ID:</span>
-                <code style={{ fontSize: '0.8rem', background: 'var(--bg-subtle)', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>
+                <span className="account-label">User ID:</span>
+                <code className="account-code">
                   {user.id}
                 </code>
 
-                <span style={{ color: 'var(--text-muted)' }}>Account Created:</span>
-                <span>{new Date(user.created_at).toLocaleDateString()}</span>
+                <span className="account-label">Account Created:</span>
+                <span className="account-val">{new Date(user.created_at).toLocaleDateString()}</span>
               </div>
 
               <div style={{ marginTop: '1.25rem' }}>
@@ -199,7 +199,7 @@ create policy "Users can delete their own habit logs" on public.habit_logs for d
             records are strictly isolated to your user account.
           </p>
 
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+          <div className="settings-actions-wrap">
             <button className="btn btn-secondary" onClick={copySqlSchema}>
               <Copy size={15} />
               <span>{copied ? 'SQL Schema Copied!' : 'Copy SQL Schema Script'}</span>

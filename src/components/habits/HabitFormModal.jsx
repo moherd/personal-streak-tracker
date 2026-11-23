@@ -154,7 +154,7 @@ export default function HabitFormModal({
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+        <div className="form-row-2col">
           <div className="form-group">
             <label className="form-label" htmlFor="habitCategory">
               Category
@@ -242,22 +242,15 @@ export default function HabitFormModal({
 
         <div className="form-group">
           <label className="form-label">Color Accent</label>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <div className="color-palette-row">
             {PRESET_COLORS.map((c) => (
               <button
                 key={c}
                 type="button"
-                style={{
-                  width: '26px',
-                  height: '26px',
-                  borderRadius: '50%',
-                  backgroundColor: c,
-                  border: color === c ? '2px solid #0f172a' : '2px solid transparent',
-                  cursor: 'pointer',
-                  outline: 'none',
-                  transform: color === c ? 'scale(1.15)' : 'none'
-                }}
+                className={`color-dot-btn ${color === c ? 'selected' : ''}`}
+                style={{ backgroundColor: c }}
                 onClick={() => setColor(c)}
+                aria-label={`Select color ${c}`}
               />
             ))}
           </div>

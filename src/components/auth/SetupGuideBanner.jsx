@@ -11,10 +11,9 @@ export default function SetupGuideBanner({ onOpenSettings }) {
           To persist your habits, streaks, and authentication data securely in PostgreSQL, configure your
           Supabase environment variables in <code>.env</code> and run the provided database migration.
         </p>
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+        <div className="setup-banner-actions">
           <button
             className="btn btn-secondary"
-            style={{ fontSize: '0.8rem', padding: '0.35rem 0.75rem' }}
             onClick={onOpenSettings}
           >
             <Database size={14} />
@@ -25,7 +24,7 @@ export default function SetupGuideBanner({ onOpenSettings }) {
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-secondary"
-            style={{ fontSize: '0.8rem', padding: '0.35rem 0.75rem', textDecoration: 'none' }}
+            style={{ textDecoration: 'none' }}
           >
             <span>Open Supabase Dashboard</span>
             <ExternalLink size={13} />

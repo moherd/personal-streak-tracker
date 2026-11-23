@@ -44,10 +44,18 @@
   --transition-normal: 200ms ease;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -57,6 +65,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
 }
 
 button, input, select, textarea {
@@ -66,8 +75,11 @@ button, input, select, textarea {
 /* App Container */
 .app-container {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .main-content {
@@ -76,15 +88,19 @@ button, input, select, textarea {
   width: 100%;
   margin: 0 auto;
   padding: 1.5rem 1rem 3rem;
+  box-sizing: border-box;
 }
 
-/* Navigation */
+/* ==========================================================================
+   NAVIGATION
+   ========================================================================== */
 .navbar {
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
   z-index: 40;
+  width: 100%;
 }
 
 .nav-wrapper {
@@ -94,7 +110,7 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .nav-brand {
@@ -105,18 +121,23 @@ button, input, select, textarea {
   font-size: 1.15rem;
   color: var(--text-main);
   text-decoration: none;
+  flex-shrink: 0;
+  user-select: none;
 }
 
 .nav-brand-icon {
   width: 28px;
   height: 28px;
   color: var(--primary);
+  flex-shrink: 0;
 }
 
 .nav-tabs {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  margin-right: auto;
+  margin-left: 1.5rem;
 }
 
 .nav-tab-btn {
@@ -133,6 +154,7 @@ button, input, select, textarea {
   cursor: pointer;
   transition: all var(--transition-fast);
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .nav-tab-btn:hover {
@@ -150,9 +172,15 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
-/* User Pill & Auth Buttons */
+.nav-user-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .user-badge {
   display: inline-flex;
   align-items: center;
@@ -164,7 +192,16 @@ button, input, select, textarea {
   color: var(--text-muted);
 }
 
-/* Typography & Layout Helpers */
+.user-email-text {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   PAGE HEADERS & TYPOGRAPHY
+   ========================================================================== */
 .page-header {
   display: flex;
   align-items: center;
@@ -187,7 +224,33 @@ button, input, select, textarea {
   margin-top: 0.25rem;
 }
 
-/* Grid & Cards */
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.section-title-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.mobile-scroll-hint {
+  display: none;
+}
+
+/* ==========================================================================
+   STATS CARDS GRID
+   ========================================================================== */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -203,6 +266,7 @@ button, input, select, textarea {
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .stat-header {
@@ -210,6 +274,7 @@ button, input, select, textarea {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.5rem;
+  gap: 0.25rem;
 }
 
 .stat-label {
@@ -218,12 +283,16 @@ button, input, select, textarea {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-icon {
   width: 18px;
   height: 18px;
   color: var(--text-subtle);
+  flex-shrink: 0;
 }
 
 .stat-value {
@@ -231,25 +300,19 @@ button, input, select, textarea {
   font-weight: 700;
   color: var(--text-main);
   line-height: 1.2;
+  word-break: break-word;
 }
 
 .stat-subtext {
   font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 0.35rem;
+  line-height: 1.3;
 }
 
-/* Dashboard Sections */
-.section-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: var(--text-main);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
+/* ==========================================================================
+   DASHBOARD SPLIT & TODAY'S CHECKLIST
+   ========================================================================== */
 .dashboard-split {
   display: grid;
   grid-template-columns: 3fr 2fr;
@@ -257,22 +320,16 @@ button, input, select, textarea {
   margin-bottom: 2rem;
 }
 
-@media (max-width: 900px) {
-  .dashboard-split {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Card Surface */
 .surface-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 1.25rem;
   box-shadow: var(--shadow-sm);
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-/* Daily Habits Today Checklist */
 .habit-checklist {
   display: flex;
   flex-direction: column;
@@ -288,6 +345,8 @@ button, input, select, textarea {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   transition: border-color var(--transition-fast), background-color var(--transition-fast);
+  gap: 0.85rem;
+  min-width: 0;
 }
 
 .checklist-item:hover {
@@ -304,13 +363,25 @@ button, input, select, textarea {
   align-items: center;
   gap: 0.85rem;
   flex: 1;
+  min-width: 0;
+}
+
+.checklist-check-btn {
+  flex-shrink: 0;
+}
+
+.checklist-info {
+  min-width: 0;
+  flex: 1;
 }
 
 .checklist-info h4 {
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-main);
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.2rem;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .checklist-item.completed .checklist-info h4 {
@@ -320,9 +391,19 @@ button, input, select, textarea {
 .checklist-meta {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.4rem 0.6rem;
   font-size: 0.775rem;
   color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.meta-bullet {
+  color: var(--text-subtle);
+  user-select: none;
+}
+
+.checklist-action {
+  flex-shrink: 0;
 }
 
 .checklist-toggle-btn {
@@ -330,13 +411,14 @@ button, input, select, textarea {
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  min-width: 100px;
+  min-width: 95px;
   padding: 0.45rem 0.85rem;
   border-radius: var(--radius-md);
   font-size: 0.825rem;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
 .btn-complete {
@@ -371,6 +453,7 @@ button, input, select, textarea {
   font-weight: 600;
   background: #fef3c7;
   color: #92400e;
+  white-space: nowrap;
 }
 
 .streak-pill.zero {
@@ -387,12 +470,62 @@ button, input, select, textarea {
   font-weight: 500;
   background: var(--bg-subtle);
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
-/* Habit Cards Grid */
+/* ==========================================================================
+   WEEKLY CONSISTENCY BARS
+   ========================================================================== */
+.consistency-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 120px;
+  padding: 0.5rem 0 0;
+  gap: 0.5rem;
+}
+
+.consistency-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.bar-track {
+  width: 100%;
+  max-width: 32px;
+  height: 85px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.bar-fill {
+  width: 100%;
+  background-color: var(--primary);
+  border-radius: var(--radius-sm);
+  transition: height var(--transition-normal);
+}
+
+.bar-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   HABIT CARDS GRID
+   ========================================================================== */
 .habits-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: 1rem;
 }
 
@@ -406,6 +539,8 @@ button, input, select, textarea {
   justify-content: space-between;
   box-shadow: var(--shadow-sm);
   transition: border-color var(--transition-fast);
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .habit-card:hover {
@@ -420,10 +555,34 @@ button, input, select, textarea {
   margin-bottom: 0.75rem;
 }
 
+.habit-card-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.frequency-tag {
+  font-size: 0.725rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.archived-tag {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  background: #e2e8f0;
+  color: #475569;
+  border-radius: var(--radius-sm);
+}
+
 .habit-card-title {
   font-size: 1.05rem;
   font-weight: 600;
   color: var(--text-main);
+  word-break: break-word;
 }
 
 .habit-card-desc {
@@ -431,6 +590,7 @@ button, input, select, textarea {
   color: var(--text-muted);
   margin-top: 0.25rem;
   line-height: 1.4;
+  word-break: break-word;
 }
 
 .habit-card-stats {
@@ -444,26 +604,474 @@ button, input, select, textarea {
   text-align: center;
 }
 
+.habit-stat-col {
+  min-width: 0;
+}
+
 .stat-mini-label {
   font-size: 0.7rem;
   color: var(--text-muted);
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-mini-val {
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+.habit-card-submeta {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
 }
 
 .habit-card-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 0.5rem;
 }
 
-/* Buttons */
+.habit-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.habit-action-btn {
+  min-width: 38px;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.habit-delete-btn {
+  color: var(--danger);
+}
+
+/* ==========================================================================
+   HABIT FILTER BAR
+   ========================================================================== */
+.habit-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background: var(--bg-surface);
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-sizing: border-box;
+}
+
+.filter-search-box {
+  position: relative;
+  flex: 1 1 200px;
+  min-width: 160px;
+}
+
+.filter-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-subtle);
+  pointer-events: none;
+}
+
+.filter-search-input {
+  padding-left: 2.25rem;
+  height: 38px;
+  width: 100%;
+}
+
+.filter-select-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-select {
+  height: 38px;
+  width: auto;
+  font-size: 0.825rem;
+}
+
+.filter-reset-btn {
+  height: 38px;
+  padding: 0 0.75rem;
+  font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   CALENDAR STYLES
+   ========================================================================== */
+.calendar-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.calendar-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.calendar-title-icon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.calendar-month-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.calendar-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.calendar-today-btn {
+  font-size: 0.8rem;
+  padding: 0.35rem 0.65rem;
+}
+
+.calendar-nav-btn {
+  min-width: 36px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+
+.calendar-weekdays-row {
+  margin-bottom: 6px;
+}
+
+.calendar-day-head {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding-bottom: 0.5rem;
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  min-height: 52px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.calendar-cell:hover {
+  background-color: var(--bg-surface-hover);
+  border-color: #cbd5e1;
+}
+
+.calendar-cell.other-month {
+  opacity: 0.35;
+  background-color: #f8fafc;
+}
+
+.calendar-cell.is-today {
+  border-color: var(--primary);
+  border-width: 2px;
+}
+
+.calendar-cell-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2px;
+}
+
+.calendar-day-num {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.calendar-count-badge {
+  font-size: 0.675rem;
+  font-weight: 700;
+  background-color: var(--bg-subtle);
+  color: var(--text-muted);
+  padding: 0.05rem 0.35rem;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+.calendar-count-badge.all-done {
+  background-color: var(--success-light);
+  color: var(--success-text);
+}
+
+.count-full {
+  display: inline;
+}
+
+.count-compact {
+  display: none;
+}
+
+.calendar-dots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: center;
+  max-height: 16px;
+  overflow: hidden;
+}
+
+.calendar-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  flex-shrink: 0;
+}
+
+.calendar-dot-more {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.calendar-legend {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.775rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.calendar-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-box-today {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-sm);
+}
+
+.legend-badge-done {
+  padding: 0.1rem 0.35rem;
+  background-color: var(--success-light);
+  color: var(--success-text);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.7rem;
+}
+
+/* Day Details Item */
+.day-details-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  gap: 0.75rem;
+}
+
+.day-details-item.completed {
+  background-color: var(--success-light);
+  border-color: #a7f3d0;
+}
+
+.day-details-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.day-details-info {
+  min-width: 0;
+}
+
+/* ==========================================================================
+   HALL OF FAME & TABLES
+   ========================================================================== */
+.fame-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fame-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-surface);
+  gap: 0.75rem;
+}
+
+.fame-item-card.top-record {
+  background-color: #fdf4ff;
+  border-color: #f0abfc;
+}
+
+.fame-item-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.fame-rank-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--bg-subtle);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.fame-rank-badge.top-rank {
+  background-color: #fae8ff;
+  color: #a21caf;
+}
+
+.fame-habit-info {
+  min-width: 0;
+}
+
+.fame-habit-info h4 {
+  font-size: 0.925rem;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.fame-habit-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.fame-item-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.fame-streak-val {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #7c3aed;
+}
+
+.fame-streak-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.data-table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  width: 100%;
+}
+
+.data-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.data-table th {
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  background-color: #fafbfc;
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.data-table tr:hover td {
+  background-color: var(--bg-surface-hover);
+}
+
+/* ==========================================================================
+   BUTTONS & FORMS
+   ========================================================================== */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -476,6 +1084,8 @@ button, input, select, textarea {
   cursor: pointer;
   border: 1px solid transparent;
   transition: all var(--transition-fast);
+  text-decoration: none;
+  min-height: 38px;
 }
 
 .btn-primary {
@@ -515,6 +1125,11 @@ button, input, select, textarea {
   color: var(--text-muted);
   border-radius: var(--radius-sm);
   cursor: pointer;
+  min-height: 36px;
+  min-width: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-icon:hover {
@@ -543,9 +1158,11 @@ button, input, select, textarea {
   width: 100%;
   max-width: 520px;
   max-height: 90vh;
+  max-height: 90dvh;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .modal-header {
@@ -576,7 +1193,7 @@ button, input, select, textarea {
   background-color: #fafbfc;
 }
 
-/* Forms */
+/* Form inputs */
 .form-group {
   margin-bottom: 1rem;
 }
@@ -599,6 +1216,7 @@ button, input, select, textarea {
   background: #ffffff;
   outline: none;
   transition: border-color var(--transition-fast);
+  box-sizing: border-box;
 }
 
 .form-input:focus, .form-select:focus, .form-textarea:focus {
@@ -610,131 +1228,66 @@ button, input, select, textarea {
   font-size: 0.75rem;
   color: var(--text-muted);
   margin-top: 0.25rem;
+  line-height: 1.4;
 }
 
-/* Calendar Styles */
-.calendar-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-}
-
-.calendar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.25rem;
-}
-
-.calendar-grid {
+.form-row-2col {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
 }
 
-.calendar-day-head {
-  text-align: center;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  padding-bottom: 0.5rem;
-}
-
-.calendar-cell {
-  aspect-ratio: 1;
-  min-height: 52px;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 0.4rem;
+.color-palette-row {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  position: relative;
-}
-
-.calendar-cell:hover {
-  background-color: var(--bg-surface-hover);
-  border-color: #cbd5e1;
-}
-
-.calendar-cell.other-month {
-  opacity: 0.35;
-  background-color: #f8fafc;
-}
-
-.calendar-cell.is-today {
-  border-color: var(--primary);
-  border-width: 2px;
-}
-
-.calendar-day-num {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.calendar-dots {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-  align-items: center;
-  max-height: 16px;
-  overflow: hidden;
-}
-
-.calendar-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--primary);
-}
-
-/* Weekly Consistency Chart / Bar */
-.consistency-bars {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  height: 120px;
-  padding: 0.5rem 0 0;
   gap: 0.5rem;
-}
-
-.consistency-bar-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  height: 100%;
-  justify-content: flex-end;
-  gap: 0.35rem;
+  flex-wrap: wrap;
 }
 
-.bar-track {
-  width: 100%;
-  max-width: 32px;
-  height: 85px;
-  background: var(--bg-subtle);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
+.color-dot-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  outline: none;
+  transition: transform var(--transition-fast);
 }
 
-.bar-fill {
-  width: 100%;
-  background-color: var(--primary);
-  border-radius: var(--radius-sm);
-  transition: height var(--transition-normal);
+.color-dot-btn.selected {
+  border-color: #0f172a;
+  transform: scale(1.15);
 }
 
-.bar-label {
-  font-size: 0.7rem;
+/* Settings elements */
+.account-details-grid {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  row-gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.account-label {
   color: var(--text-muted);
+}
+
+.account-val {
+  word-break: break-all;
+}
+
+.account-code {
+  font-size: 0.8rem;
+  background: var(--bg-subtle);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.settings-actions-wrap {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
 /* Empty states */
@@ -765,6 +1318,7 @@ button, input, select, textarea {
   color: var(--text-muted);
   max-width: 400px;
   margin: 0 auto 1.25rem;
+  line-height: 1.4;
 }
 
 /* Setup Banner */
@@ -799,51 +1353,452 @@ button, input, select, textarea {
   margin-bottom: 0.75rem;
 }
 
-/* Code Snippet Box */
-.code-box {
-  background: #0f172a;
-  color: #f8fafc;
-  border-radius: var(--radius-md);
-  padding: 0.75rem;
-  font-family: monospace;
-  font-size: 0.775rem;
-  overflow-x: auto;
-  line-height: 1.4;
+.setup-banner-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-/* Table styles */
-.data-table-container {
-  overflow-x: auto;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
+/* ==========================================================================
+   MOBILE RESPONSIVENESS & BREAKPOINTS
+   ========================================================================== */
+
+/* Tablet & Mobile Header (< 768px) */
+@media (max-width: 768px) {
+  .nav-wrapper {
+    flex-wrap: wrap;
+    gap: 0.65rem 0.5rem;
+    padding: 0.65rem 1rem;
+  }
+
+  .nav-brand {
+    order: 1;
+    font-size: 1.1rem;
+  }
+
+  .nav-actions {
+    order: 2;
+    gap: 0.5rem;
+  }
+
+  .nav-tabs {
+    order: 3;
+    width: 100%;
+    margin: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0.35rem;
+    padding-bottom: 2px;
+  }
+
+  .nav-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-tab-btn {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.8rem;
+    min-height: 38px;
+    flex-shrink: 0;
+  }
+
+  .main-content {
+    padding: 1.25rem 1rem 2.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .mobile-scroll-hint {
+    display: inline-block;
+    font-size: 0.725rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
 }
 
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-  text-align: left;
+/* Medium Mobile / Small Tablets (< 640px) */
+@media (max-width: 640px) {
+  .page-header {
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .page-title {
+    font-size: 1.35rem;
+  }
+
+  .habits-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .habit-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    padding: 0.85rem;
+  }
+
+  .filter-search-box {
+    width: 100%;
+    flex: none;
+  }
+
+  .filter-select-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .filter-select {
+    width: 100%;
+    height: 40px;
+    font-size: 0.825rem;
+  }
+
+  .filter-reset-btn {
+    grid-column: span 2;
+    height: 38px;
+    width: 100%;
+  }
+
+  .calendar-card {
+    padding: 1rem 0.75rem;
+  }
+
+  .calendar-grid {
+    gap: 4px;
+  }
+
+  .calendar-cell {
+    min-height: 46px;
+    padding: 0.25rem 0.2rem;
+  }
 }
 
-.data-table th {
-  padding: 0.75rem 1rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  border-bottom: 1px solid var(--border-color);
-  background-color: #fafbfc;
+/* Phones (375px - 480px, including iPhone 13/14/15/16, Galaxy, Pixel) */
+@media (max-width: 480px) {
+  .nav-wrapper {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .main-content {
+    padding: 1rem 0.75rem max(2rem, env(safe-area-inset-bottom));
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .page-header .btn {
+    width: 100%;
+    min-height: 42px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .stat-card {
+    padding: 0.85rem 0.75rem;
+  }
+
+  .stat-label {
+    font-size: 0.7rem;
+  }
+
+  .stat-value {
+    font-size: 1.35rem;
+  }
+
+  .stat-subtext {
+    font-size: 0.675rem;
+  }
+
+  .surface-card {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  .section-title {
+    font-size: 1.025rem;
+  }
+
+  .section-action-btn {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.775rem;
+  }
+
+  .checklist-item {
+    padding: 0.75rem;
+    gap: 0.65rem;
+  }
+
+  .checklist-left {
+    gap: 0.65rem;
+  }
+
+  .checklist-info h4 {
+    font-size: 0.9rem;
+  }
+
+  .checklist-meta {
+    font-size: 0.725rem;
+    gap: 0.3rem 0.45rem;
+  }
+
+  .checklist-toggle-btn {
+    min-width: 78px;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.8rem;
+    min-height: 38px;
+  }
+
+  .count-full {
+    display: none;
+  }
+
+  .count-compact {
+    display: inline;
+  }
+
+  .calendar-cell {
+    min-height: 42px;
+    padding: 0.2rem 0.15rem;
+  }
+
+  .calendar-day-head {
+    font-size: 0.675rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .calendar-dots {
+    gap: 2px;
+    max-height: 10px;
+  }
+
+  .calendar-dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .calendar-legend {
+    gap: 0.5rem 0.85rem;
+    font-size: 0.725rem;
+  }
+
+  .form-row-2col {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    font-size: 16px; /* Prevents auto-zoom on iOS Safari */
+    min-height: 42px;
+  }
+
+  .modal-dialog {
+    max-height: 94dvh;
+  }
+
+  .modal-header {
+    padding: 1rem;
+  }
+
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-footer {
+    padding: 0.75rem 1rem;
+  }
+
+  .account-details-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .account-label {
+    font-size: 0.775rem;
+    font-weight: 500;
+  }
+
+  .account-val {
+    font-size: 0.875rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .account-code {
+    display: block;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .settings-actions-wrap {
+    flex-direction: column;
+  }
+
+  .settings-actions-wrap .btn {
+    width: 100%;
+    min-height: 42px;
+  }
+
+  .setup-banner {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .setup-banner-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .setup-banner-actions .btn {
+    width: 100%;
+    min-height: 42px;
+  }
+
+  .fame-item-card {
+    padding: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .fame-streak-val {
+    font-size: 1rem;
+  }
+
+  .day-details-item {
+    padding: 0.65rem;
+    gap: 0.5rem;
+  }
 }
 
-.data-table td {
-  padding: 0.85rem 1rem;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-main);
-}
+/* Small Phones (320px - 360px, e.g. iPhone SE 1st gen, small Galaxy A) */
+@media (max-width: 360px) {
+  .nav-wrapper {
+    padding: 0.5rem;
+  }
 
-.data-table tr:last-child td {
-  border-bottom: none;
-}
+  .main-content {
+    padding: 0.75rem 0.5rem max(1.5rem, env(safe-area-inset-bottom));
+  }
 
-.data-table tr:hover td {
-  background-color: var(--bg-surface-hover);
+  .nav-brand {
+    font-size: 1rem;
+    gap: 0.4rem;
+  }
+
+  .nav-brand-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .user-badge {
+    padding: 0.25rem 0.45rem;
+    font-size: 0.725rem;
+  }
+
+  .nav-tab-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+
+  .stats-grid {
+    gap: 0.5rem;
+  }
+
+  .stat-card {
+    padding: 0.75rem 0.55rem;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .stat-label {
+    font-size: 0.65rem;
+  }
+
+  .checklist-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    padding: 0.65rem;
+  }
+
+  .checklist-action {
+    width: 100%;
+  }
+
+  .checklist-toggle-btn {
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .calendar-card {
+    padding: 0.75rem 0.35rem;
+  }
+
+  .calendar-grid {
+    gap: 2px;
+  }
+
+  .calendar-cell {
+    min-height: 38px;
+    padding: 0.15rem;
+  }
+
+  .calendar-day-num {
+    font-size: 0.65rem;
+  }
+
+  .calendar-count-badge {
+    font-size: 0.6rem;
+    padding: 0 0.2rem;
+  }
+
+  .consistency-bars {
+    gap: 0.15rem;
+    height: 100px;
+  }
+
+  .bar-track {
+    max-width: 20px;
+    height: 70px;
+  }
+
+  .bar-label {
+    font-size: 0.625rem;
+  }
+
+  .filter-select-group {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-reset-btn {
+    grid-column: span 1;
+  }
+
+  .fame-item-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .fame-item-right {
+    align-self: flex-end;
+    text-align: right;
+  }
 }

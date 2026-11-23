@@ -3,7 +3,6 @@ import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-reac
 import {
   getMonthCalendarGrid,
   getTodayDate,
-  formatDate,
   isToday
 } from '../../utils/dateUtils';
 import DayDetailsModal from './DayDetailsModal';
@@ -65,25 +64,22 @@ export default function CalendarView({
 
       <div className="calendar-card">
         <div className="calendar-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <CalendarIcon size={20} style={{ color: 'var(--primary)' }} />
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-main)' }}>
-              {monthName}
-            </h2>
+          <div className="calendar-title-wrap">
+            <CalendarIcon size={20} className="calendar-title-icon" />
+            <h2 className="calendar-month-title">{monthName}</h2>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div className="calendar-nav-controls">
             <button
               type="button"
-              className="btn btn-secondary"
-              style={{ fontSize: '0.8rem', padding: '0.35rem 0.65rem' }}
+              className="btn btn-secondary calendar-today-btn"
               onClick={handleGoToday}
             >
               Today
             </button>
             <button
               type="button"
-              className="btn-icon"
+              className="btn-icon calendar-nav-btn"
               onClick={handlePrevMonth}
               aria-label="Previous Month"
             >
@@ -91,7 +87,7 @@ export default function CalendarView({
             </button>
             <button
               type="button"
-              className="btn-icon"
+              className="btn-icon calendar-nav-btn"
               onClick={handleNextMonth}
               aria-label="Next Month"
             >
@@ -101,7 +97,7 @@ export default function CalendarView({
         </div>
 
         {/* Days of week header */}
-        <div className="calendar-grid" style={{ marginBottom: '6px' }}>
+        <div className="calendar-grid calendar-weekdays-row">
           {DAY_NAMES.map((day) => (
             <div key={day} className="calendar-day-head">
               {day}
@@ -112,7 +108,6 @@ export default function CalendarView({
         {/* Month grid */}
         <div className="calendar-grid">
           {calendarGrid.map((cell) => {
-            // Count completions on this date
             let completedHabits = [];
             if (totalActive > 0) {
               for (const habit of activeHabits) {
@@ -133,36 +128,35 @@ export default function CalendarView({
                   isCurrentDay ? 'is-today' : ''
                 }`}
                 onClick={() => setSelectedDate(cell.date)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') setSelectedDate(cell.date);
+                }}
                 title={`${cell.date}: ${count} / ${totalActive} habits completed (Click to view)`}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="calendar-cell-top">
                   <span className="calendar-day-num">{cell.dayOfMonth}</span>
                   {count > 0 && (
                     <span
-                      style={{
-                        fontSize: '0.675rem',
-                        fontWeight: 700,
-                        backgroundColor: count === totalActive ? 'var(--success-light)' : 'var(--bg-subtle)',
-                        color: count === totalActive ? 'var(--success-text)' : 'var(--text-muted)',
-                        padding: '0.05rem 0.35rem',
-                        borderRadius: 'var(--radius-sm)'
-                      }}
+                      className={`calendar-count-badge ${count === totalActive ? 'all-done' : ''}`}
                     >
-                      {count}/{totalActive}
+                      <span className="count-full">{count}/{totalActive}</span>
+                      <span className="count-compact">{count}</span>
                     </span>
                   )}
                 </div>
 
                 <div className="calendar-dots">
-                  {completedHabits.slice(0, 5).map((h) => (
+                  {completedHabits.slice(0, 4).map((h) => (
                     <span
                       key={h.id}
                       className="calendar-dot"
                       style={{ backgroundColor: h.color || 'var(--primary)' }}
                     />
                   ))}
-                  {completedHabits.length > 5 && (
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>+</span>
+                  {completedHabits.length > 4 && (
+                    <span className="calendar-dot-more">+</span>
                   )}
                 </div>
               </div>
@@ -171,44 +165,17 @@ export default function CalendarView({
         </div>
 
         {/* Legend */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '1.5rem',
-            marginTop: '1.5rem',
-            paddingTop: '1rem',
-            borderTop: '1px solid var(--border-color)',
-            fontSize: '0.775rem',
-            color: 'var(--text-muted)'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <span
-              style={{
-                width: '12px',
-                height: '12px',
-                border: '2px solid var(--primary)',
-                borderRadius: 'var(--radius-sm)'
-              }}
-            />
+        <div className="calendar-legend">
+          <div className="calendar-legend-item">
+            <span className="legend-box-today" />
             <span>Today</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          <div className="calendar-legend-item">
             <span className="calendar-dot" style={{ backgroundColor: 'var(--primary)' }} />
-            <span>Completed Habit</span>
+            <span>Completed</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <span
-              style={{
-                padding: '0.1rem 0.35rem',
-                backgroundColor: 'var(--success-light)',
-                color: 'var(--success-text)',
-                borderRadius: 'var(--radius-sm)',
-                fontWeight: 600,
-                fontSize: '0.7rem'
-              }}
-            >
+          <div className="calendar-legend-item">
+            <span className="legend-badge-done">
               100%
             </span>
             <span>All Habits Done</span>

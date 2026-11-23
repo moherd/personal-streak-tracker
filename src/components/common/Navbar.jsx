@@ -26,52 +26,60 @@ export default function Navbar({ activeTab, setActiveTab, onOpenAuthModal }) {
   return (
     <header className="navbar">
       <div className="nav-wrapper">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-          <div className="nav-brand" style={{ cursor: 'pointer' }} onClick={() => setActiveTab('dashboard')}>
-            <Flame className="nav-brand-icon" />
-            <span>StreakTracker</span>
-          </div>
-
-          <nav className="nav-tabs" aria-label="Main Navigation">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  className={`nav-tab-btn ${isActive ? 'active' : ''}`}
-                  onClick={() => setActiveTab(item.id)}
-                >
-                  <Icon size={16} />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
-          </nav>
+        <div
+          className="nav-brand"
+          style={{ cursor: 'pointer' }}
+          onClick={() => setActiveTab('dashboard')}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') setActiveTab('dashboard');
+          }}
+        >
+          <Flame className="nav-brand-icon" />
+          <span>StreakTracker</span>
         </div>
+
+        <nav className="nav-tabs" aria-label="Main Navigation">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                className={`nav-tab-btn ${isActive ? 'active' : ''}`}
+                onClick={() => setActiveTab(item.id)}
+                type="button"
+              >
+                <Icon size={16} />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
 
         <div className="nav-actions">
           {user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div className="nav-user-group">
               <div className="user-badge" title={user.email}>
                 <User size={14} />
-                <span>{user.email?.split('@')[0]}</span>
+                <span className="user-email-text">{user.email?.split('@')[0]}</span>
               </div>
               <button
-                className="btn btn-secondary"
-                style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem' }}
+                className="btn btn-secondary nav-action-btn"
                 onClick={() => signOut()}
                 title="Sign Out"
+                type="button"
               >
                 <LogOut size={14} />
-                <span>Sign Out</span>
+                <span className="nav-action-text">Sign Out</span>
               </button>
             </div>
           ) : (
             <button
-              className="btn btn-primary"
-              style={{ padding: '0.45rem 0.85rem', fontSize: '0.825rem' }}
+              className="btn btn-primary nav-action-btn"
               onClick={onOpenAuthModal}
+              type="button"
             >
               <LogIn size={15} />
               <span>{isConfigured ? 'Sign In / Register' : 'Setup Supabase'}</span>

@@ -1,13 +1,32 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+let rawUrl = (import.meta.env.VITE_SUPABASE_URL || '').trim();
+let rawKey = (import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+
+// Strip accidental "https://" or "http://" from key if prepended
+if (rawKey.startsWith('https://sb_') || rawKey.startsWith('http://sb_')) {
+  rawKey = rawKey.replace(/^https?:\/\//, '');
+}
+if (rawUrl.startsWith('https://sb_') || rawUrl.startsWith('http://sb_')) {
+  rawUrl = rawUrl.replace(/^https?:\/\//, '');
+}
+
+// Auto-detect if URL and Key were accidentally swapped
+if ((rawUrl.startsWith('sb_') || rawUrl.startsWith('eyJ')) && rawKey.includes('supabase.co')) {
+  const temp = rawUrl;
+  rawUrl = rawKey;
+  rawKey = temp;
+}
+
+// Clean URL: strip trailing /rest/v1 and trailing slashes
+const supabaseUrl = rawUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/+$/, '');
+const supabaseAnonKey = rawKey;
 
 export const isSupabaseConfigured = () => {
   return (
     typeof supabaseUrl === 'string' &&
     supabaseUrl.startsWith('https://') &&
-    !supabaseUrl.includes('your-project-id') &&
+    supabaseUrl.includes('.supabase.co') &&
     typeof supabaseAnonKey === 'string' &&
     supabaseAnonKey.length > 20 &&
     !supabaseAnonKey.includes('your-supabase-anon-key')

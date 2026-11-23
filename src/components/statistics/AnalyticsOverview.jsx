@@ -170,7 +170,10 @@ export default function AnalyticsOverview({ habits = [], habitLogsMap = new Map(
 
       {/* Detailed Habit Performance Table */}
       <div className="surface-card" style={{ marginBottom: '1.5rem' }}>
-        <h3 className="section-title">Habit Health & Consistency Breakdown</h3>
+        <div className="section-title-wrap">
+          <h3 className="section-title" style={{ marginBottom: 0 }}>Habit Health & Consistency Breakdown</h3>
+          <span className="mobile-scroll-hint">Scroll table &rarr;</span>
+        </div>
         <div className="data-table-container">
           <table className="data-table">
             <thead>
@@ -295,50 +298,29 @@ export default function AnalyticsOverview({ habits = [], habitLogsMap = new Map(
           <span>Streak Records Hall of Fame</span>
           <Award size={18} style={{ color: '#8b5cf6' }} />
         </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        <div className="fame-list">
           {streakLeaderboard.map(({ habit, metrics }, idx) => (
             <div
               key={habit.id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '0.75rem 1rem',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: idx === 0 ? '#fdf4ff' : 'var(--bg-surface)'
-              }}
+              className={`fame-item-card ${idx === 0 ? 'top-record' : ''}`}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <span
-                  style={{
-                    width: '24px',
-                    height: '24px',
-                    borderRadius: '50%',
-                    backgroundColor: idx === 0 ? '#fae8ff' : 'var(--bg-subtle)',
-                    color: idx === 0 ? '#a21caf' : 'var(--text-muted)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.75rem',
-                    fontWeight: 700
-                  }}
-                >
+              <div className="fame-item-left">
+                <span className={`fame-rank-badge ${idx === 0 ? 'top-rank' : ''}`}>
                   #{idx + 1}
                 </span>
-                <div>
-                  <h4 style={{ fontSize: '0.925rem', fontWeight: 600 }}>{habit.name}</h4>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                    {habit.category} • Current streak: {metrics.currentStreak}
+                <div className="fame-habit-info">
+                  <h4>{habit.name}</h4>
+                  <span className="fame-habit-sub">
+                    {habit.category} • Current: {metrics.currentStreak}
                   </span>
                 </div>
               </div>
 
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '1.15rem', fontWeight: 700, color: '#7c3aed' }}>
-                  {metrics.longestStreak} {habit.frequency === 'weekly' ? 'weeks' : 'days'}
+              <div className="fame-item-right">
+                <div className="fame-streak-val">
+                  {metrics.longestStreak} {habit.frequency === 'weekly' ? 'wks' : 'days'}
                 </div>
-                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                <div className="fame-streak-label">
                   All-time record
                 </div>
               </div>
