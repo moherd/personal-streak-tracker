@@ -12,7 +12,8 @@ const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export default function CalendarView({
   habits = [],
   habitLogsMap = new Map(),
-  onToggleCompletion
+  onToggleCompletion,
+  isPending
 }) {
   const today = new Date();
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -191,6 +192,7 @@ export default function CalendarView({
         habits={habits}
         habitLogsMap={habitLogsMap}
         onToggleCompletion={onToggleCompletion}
+        isPending={isPending}
       />
     </div>
   );

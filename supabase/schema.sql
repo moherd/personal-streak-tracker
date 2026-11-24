@@ -48,6 +48,16 @@ create index if not exists idx_habits_archived on public.habits(user_id, is_arch
 create index if not exists idx_habit_logs_habit_id on public.habit_logs(habit_id);
 create index if not exists idx_habit_logs_user_date on public.habit_logs(user_id, completed_date);
 
+-- PERMISSIONS
+grant usage on schema public to anon, authenticated;
+grant all on table public.profiles to authenticated;
+grant select on table public.profiles to anon;
+grant all on table public.habits to authenticated;
+grant select on table public.habits to anon;
+grant all on table public.habit_logs to authenticated;
+grant select on table public.habit_logs to anon;
+grant all on all sequences in schema public to authenticated;
+
 -- ROW LEVEL SECURITY (RLS)
 alter table public.profiles enable row level security;
 alter table public.habits enable row level security;
@@ -90,6 +100,9 @@ with check (
     and habits.user_id = auth.uid()
   )
 );
+
+drop policy if exists "Users can update their own habit logs" on public.habit_logs;
+create policy "Users can update their own habit logs" on public.habit_logs for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 drop policy if exists "Users can delete their own habit logs" on public.habit_logs;
 create policy "Users can delete their own habit logs" on public.habit_logs for delete using (auth.uid() = user_id);

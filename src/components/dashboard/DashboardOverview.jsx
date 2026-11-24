@@ -17,7 +17,8 @@ export default function DashboardOverview({
   habits = [],
   habitLogsMap = new Map(),
   onToggleCompletion,
-  onCreateHabit
+  onCreateHabit,
+  isPending
 }) {
   const todayStr = getTodayDate();
   const metrics = calculateDashboardMetrics(habits, habitLogsMap, todayStr);
@@ -89,6 +90,7 @@ export default function DashboardOverview({
             habitLogsMap={habitLogsMap}
             onToggleCompletion={onToggleCompletion}
             onCreateHabit={onCreateHabit}
+            isPending={isPending}
           />
         </div>
         <div>

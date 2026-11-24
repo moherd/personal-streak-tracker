@@ -31,7 +31,8 @@ export default function App() {
     logs,
     habitLogsMap,
     loading: logsLoading,
-    toggleCompletion
+    toggleCompletion,
+    isPending
   } = useHabitLogs();
 
   const handleQuickCreate = async (formData) => {
@@ -57,6 +58,7 @@ export default function App() {
             habitLogsMap={habitLogsMap}
             onToggleCompletion={toggleCompletion}
             onCreateHabit={() => setIsQuickCreateOpen(true)}
+            isPending={isPending}
           />
         )}
 
@@ -76,6 +78,7 @@ export default function App() {
             habits={habits}
             habitLogsMap={habitLogsMap}
             onToggleCompletion={toggleCompletion}
+            isPending={isPending}
           />
         )}
 

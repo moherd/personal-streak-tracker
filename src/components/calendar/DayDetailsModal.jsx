@@ -9,7 +9,8 @@ export default function DayDetailsModal({
   selectedDate,
   habits = [],
   habitLogsMap = new Map(),
-  onToggleCompletion
+  onToggleCompletion,
+  isPending = () => false
 }) {
   if (!selectedDate) return null;
 
@@ -43,6 +44,7 @@ export default function DayDetailsModal({
           {activeHabits.map((habit) => {
             const logs = habitLogsMap.get(habit.id) || new Set();
             const isCompleted = logs.has(selectedDate);
+            const pending = isPending(habit.id, selectedDate);
 
             return (
               <div
@@ -55,9 +57,12 @@ export default function DayDetailsModal({
                     className="btn-icon checklist-check-btn"
                     style={{
                       color: isCompleted ? 'var(--success)' : 'var(--text-subtle)',
-                      padding: 0
+                      padding: 0,
+                      opacity: pending ? 0.5 : 1,
+                      cursor: pending ? 'wait' : 'pointer'
                     }}
                     onClick={() => onToggleCompletion(habit.id, selectedDate)}
+                    disabled={pending}
                     aria-label={isCompleted ? `Undo ${habit.name}` : `Complete ${habit.name}`}
                   >
                     {isCompleted ? <CheckCircle2 size={22} /> : <Circle size={22} />}
@@ -76,6 +81,8 @@ export default function DayDetailsModal({
                   type="button"
                   className={`checklist-toggle-btn ${isCompleted ? 'btn-completed' : 'btn-complete'}`}
                   onClick={() => onToggleCompletion(habit.id, selectedDate)}
+                  disabled={pending}
+                  style={{ opacity: pending ? 0.7 : 1, cursor: pending ? 'wait' : 'pointer' }}
                 >
                   {isCompleted ? (
                     <>
@@ -83,7 +90,7 @@ export default function DayDetailsModal({
                       <span>Done</span>
                     </>
                   ) : (
-                    <span>Complete</span>
+                    <span>{pending ? 'Saving...' : 'Complete'}</span>
                   )}
                 </button>
               </div>

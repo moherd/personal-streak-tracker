@@ -7,7 +7,8 @@ export default function TodayHabitsList({
   habits = [],
   habitLogsMap = new Map(),
   onToggleCompletion,
-  onCreateHabit
+  onCreateHabit,
+  isPending = () => false
 }) {
   const activeHabits = habits.filter((h) => !h.is_archived);
   const todayStr = getTodayDate();
@@ -49,6 +50,7 @@ export default function TodayHabitsList({
           const logs = habitLogsMap.get(habit.id) || new Set();
           const metrics = calculateHabitStreak(habit, logs, todayStr);
           const isCompleted = metrics.isCompletedToday;
+          const pending = isPending(habit.id, todayStr);
 
           return (
             <div
@@ -60,9 +62,12 @@ export default function TodayHabitsList({
                   type="button"
                   className="btn-icon checklist-check-btn"
                   style={{
-                    color: isCompleted ? 'var(--success)' : 'var(--text-subtle)'
+                    color: isCompleted ? 'var(--success)' : 'var(--text-subtle)',
+                    opacity: pending ? 0.5 : 1,
+                    cursor: pending ? 'wait' : 'pointer'
                   }}
                   onClick={() => onToggleCompletion(habit.id, todayStr)}
+                  disabled={pending}
                   title={isCompleted ? 'Undo completion' : 'Mark complete'}
                   aria-label={isCompleted ? `Undo completion for ${habit.name}` : `Mark ${habit.name} complete`}
                 >
@@ -93,6 +98,8 @@ export default function TodayHabitsList({
                   type="button"
                   className={`checklist-toggle-btn ${isCompleted ? 'btn-completed' : 'btn-complete'}`}
                   onClick={() => onToggleCompletion(habit.id, todayStr)}
+                  disabled={pending}
+                  style={{ opacity: pending ? 0.7 : 1, cursor: pending ? 'wait' : 'pointer' }}
                   aria-label={isCompleted ? `Undo ${habit.name}` : `Complete ${habit.name}`}
                 >
                   {isCompleted ? (
@@ -101,7 +108,7 @@ export default function TodayHabitsList({
                       <span>Done</span>
                     </>
                   ) : (
-                    <span>Complete</span>
+                    <span>{pending ? 'Saving...' : 'Complete'}</span>
                   )}
                 </button>
               </div>

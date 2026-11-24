@@ -8,6 +8,7 @@ export function useHabitLogs() {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [pendingKeys, setPendingKeys] = useState(new Set());
 
   const fetchLogs = useCallback(async () => {
     if (!user || !isSupabaseConfigured()) {
@@ -51,9 +52,21 @@ export function useHabitLogs() {
     return map;
   }, [logs]);
 
+  const isPending = useCallback(
+    (habitId, completedDate = getTodayDate()) => {
+      return pendingKeys.has(`${habitId}_${completedDate}`);
+    },
+    [pendingKeys]
+  );
+
   // Complete a habit on a given date (default today)
+  // Strictly waits for Supabase confirmation before updating state
   const completeHabit = async (habitId, completedDate = getTodayDate(), notes = '') => {
     if (!user) throw new Error('User not authenticated');
+    const opKey = `${habitId}_${completedDate}`;
+
+    // Prevent duplicate concurrent requests
+    if (pendingKeys.has(opKey)) return;
 
     // Check if already completed locally
     const existingDates = habitLogsMap.get(habitId);
@@ -61,18 +74,8 @@ export function useHabitLogs() {
       return; // Already completed, avoid duplicate
     }
 
-    // Optimistic log entry
-    const tempId = `temp-${Date.now()}`;
-    const optimisticLog = {
-      id: tempId,
-      habit_id: habitId,
-      user_id: user.id,
-      completed_date: completedDate,
-      notes,
-      created_at: new Date().toISOString()
-    };
-
-    setLogs((prev) => [optimisticLog, ...prev]);
+    setPendingKeys((prev) => new Set(prev).add(opKey));
+    setError(null);
 
     try {
       const { data, error: insertError } = await supabase
@@ -89,36 +92,63 @@ export function useHabitLogs() {
         .single();
 
       if (insertError) {
-        // If it's a unique constraint violation, it's already there
+        // If it's a unique constraint violation, retrieve the record
         if (insertError.code === '23505') {
+          const { data: existingLog } = await supabase
+            .from('habit_logs')
+            .select('*')
+            .eq('habit_id', habitId)
+            .eq('completed_date', completedDate)
+            .eq('user_id', user.id)
+            .maybeSingle();
+
+          if (existingLog) {
+            setLogs((prev) => {
+              if (prev.some((l) => l.id === existingLog.id || (l.habit_id === habitId && l.completed_date === completedDate))) {
+                return prev;
+              }
+              return [existingLog, ...prev];
+            });
+            return existingLog;
+          }
           return;
         }
         throw insertError;
       }
 
-      // Replace temp log with real server data
-      setLogs((prev) => prev.map((l) => (l.id === tempId ? data : l)));
+      // Only update local state AFTER Supabase confirms successful insertion
+      if (data) {
+        setLogs((prev) => {
+          if (prev.some((l) => l.id === data.id || (l.habit_id === habitId && l.completed_date === completedDate))) {
+            return prev;
+          }
+          return [data, ...prev];
+        });
+      }
       return data;
     } catch (err) {
       console.error('Error completing habit:', err);
-      // Revert optimistic update
-      setLogs((prev) => prev.filter((l) => l.id !== tempId));
+      setError(err.message || 'Failed to complete habit');
       throw err;
+    } finally {
+      setPendingKeys((prev) => {
+        const next = new Set(prev);
+        next.delete(opKey);
+        return next;
+      });
     }
   };
 
   // Undo a habit completion
+  // Strictly waits for Supabase confirmation before updating state
   const undoCompletion = async (habitId, completedDate = getTodayDate()) => {
     if (!user) throw new Error('User not authenticated');
+    const opKey = `${habitId}_${completedDate}`;
 
-    const removedLogs = logs.filter(
-      (l) => l.habit_id === habitId && l.completed_date === completedDate
-    );
+    if (pendingKeys.has(opKey)) return;
 
-    // Optimistically remove from state
-    setLogs((prev) =>
-      prev.filter((l) => !(l.habit_id === habitId && l.completed_date === completedDate))
-    );
+    setPendingKeys((prev) => new Set(prev).add(opKey));
+    setError(null);
 
     try {
       const { error: deleteError } = await supabase
@@ -129,11 +159,21 @@ export function useHabitLogs() {
         .eq('user_id', user.id);
 
       if (deleteError) throw deleteError;
+
+      // Only update state AFTER Supabase confirms successful deletion
+      setLogs((prev) =>
+        prev.filter((l) => !(l.habit_id === habitId && l.completed_date === completedDate))
+      );
     } catch (err) {
       console.error('Error undoing completion:', err);
-      // Revert optimistic deletion
-      setLogs((prev) => [...removedLogs, ...prev]);
+      setError(err.message || 'Failed to undo completion');
       throw err;
+    } finally {
+      setPendingKeys((prev) => {
+        const next = new Set(prev);
+        next.delete(opKey);
+        return next;
+      });
     }
   };
 
@@ -155,6 +195,7 @@ export function useHabitLogs() {
     refreshLogs: fetchLogs,
     completeHabit,
     undoCompletion,
-    toggleCompletion
+    toggleCompletion,
+    isPending
   };
 }
